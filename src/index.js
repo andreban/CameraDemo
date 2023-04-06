@@ -2,7 +2,9 @@ import Camera from "./Camera.js";
 import Input from "./Input.js";
 import Triangle from "./triangle.js";
 
-const TRANSLATE_SPEED = 0.01;
+const CAMERA_TRANSLATION_SPEED = 0.01;
+const CAMERA_ROTATION_SPEED = 1;
+const CAMERA_ZOOM_SPEED = 1.01;
 
 class App {
   constructor(canvas) {
@@ -19,35 +21,35 @@ class App {
     this.blackTriangle.rotate(-0.5);
 
     if (this.input.inputState.left) {
-      this.camera.translate(-TRANSLATE_SPEED, 0);
+      this.camera.translate(-CAMERA_TRANSLATION_SPEED, 0);
     }
 
     if (this.input.inputState.right) {
-      this.camera.translate(TRANSLATE_SPEED, 0);
+      this.camera.translate(CAMERA_TRANSLATION_SPEED, 0);
     }
 
     if (this.input.inputState.up) {
-      this.camera.translate(0, -TRANSLATE_SPEED);
+      this.camera.translate(0, -CAMERA_TRANSLATION_SPEED);
     }
 
     if (this.input.inputState.down) {
-      this.camera.translate(0, TRANSLATE_SPEED);
+      this.camera.translate(0, CAMERA_TRANSLATION_SPEED);
     }
 
     if (this.input.inputState.rotateCw) {
-      this.camera.rotate(1);
+      this.camera.rotate(CAMERA_ROTATION_SPEED);
     }
 
     if (this.input.inputState.rotateCcw) {
-      this.camera.rotate(-1);
+      this.camera.rotate(-CAMERA_ROTATION_SPEED);
     }
 
     if (this.input.inputState.zoomIn) {
-      this.camera.zoomlevel(this.camera.zoom * 1.01);
+      this.camera.zoomlevel(this.camera.zoom * CAMERA_ZOOM_SPEED);
     }
 
     if (this.input.inputState.zoomOut) {
-      this.camera.zoomlevel(this.camera.zoom / 1.01);
+      this.camera.zoomlevel(this.camera.zoom / CAMERA_ZOOM_SPEED);
     }
   }
 
@@ -56,11 +58,9 @@ class App {
     this.context.fillStyle = "#CCCCCC";
     this.context.fillRect(0, 0, 800, 600);
 
-    // const viewProjection = this.camera.createProjectionMatrix();
-    // console.log(viewProjection);
-    const viewTransform = this.camera.createViewProjection();
-    this.blackTriangle.draw(this.context, viewTransform);
-    this.redTriangle.draw(this.context, viewTransform);
+    const viewProjection = this.camera.createViewProjection();
+    this.blackTriangle.draw(this.context, viewProjection);
+    this.redTriangle.draw(this.context, viewProjection);
   }
 }
 

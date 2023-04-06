@@ -1,6 +1,6 @@
-export default class Matrix2d {
+export default class Matrix3d {
   // prettier-ignore
-  static IDENTITY = new Matrix2d([
+  static IDENTITY = new Matrix3d([
     1, 0, 0,
     0, 1, 0,
     0, 0, 1,
@@ -12,7 +12,7 @@ export default class Matrix2d {
 
   static translation(x, y) {
     // prettier-ignore
-    return new Matrix2d([
+    return new Matrix3d([
       1, 0, 0,
       0, 1, 0,
       x, y, 1,
@@ -21,7 +21,7 @@ export default class Matrix2d {
 
   static scaling(scale) {
     // prettier-ignore
-    return new Matrix2d([
+    return new Matrix3d([
       scale, 0, 0,
       0, scale, 0,
       0, 0, 1, 
@@ -34,7 +34,7 @@ export default class Matrix2d {
     const cos = Math.cos(radians);
 
     // prettier-ignore
-    return new Matrix2d([
+    return new Matrix3d([
        cos, -sin, 0,
        sin, cos, 0,
         0,   0,  1,
@@ -88,7 +88,7 @@ export default class Matrix2d {
       this.matrix[7] * other.matrix[5] +
       this.matrix[8] * other.matrix[8];
 
-    return new Matrix2d(result);
+    return new Matrix3d(result);
   }
 
   mul_vec(vec) {
@@ -100,6 +100,6 @@ export default class Matrix2d {
   }
 
   clone() {
-    return new Matrix2d(structuredClone(this.matrix));
+    return new Matrix3d(structuredClone(this.matrix));
   }
 }

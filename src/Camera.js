@@ -1,4 +1,4 @@
-import Matrix2d from "./Matrix2d";
+import Matrix3d from "./Matrix3d";
 
 export default class Camera {
   constructor(screenWidth, screenHeight) {
@@ -9,8 +9,30 @@ export default class Camera {
   }
 
   translate(xAmount, yAmount) {
-    this.translation[0] += xAmount;
-    this.translation[1] += yAmount;
+    // We need to rotate movement according to the camera rotation, So, first we calculate the
+    // magnitude.
+    const magnitude = Math.sqrt(Math.pow(xAmount, 2) + Math.pow(yAmount, 2));
+
+    // Then normalized x and y.
+    const normalizedX = xAmount / magnitude;
+    const normalizedY = yAmount / magnitude;
+
+    // Then calculate the resulting angle for the movement.
+    const ang = Math.atan2(normalizedY, normalizedX) * 180 / Math.PI;
+  
+    // The final rotation is the camera rotationi + the rotation for the movement.
+    const movementAngle = this.rotation + ang;
+
+    // Tranform the rotatation to radians and calculate the new x and y from that rotation.
+    const radians = movementAngle * (Math.PI / 180.0);
+    const sin = Math.sin(radians);
+    const cos = Math.cos(radians);
+
+    let x = cos * magnitude;
+    let y = sin * magnitude;
+
+    this.translation[0] += x;
+    this.translation[1] += y;
   }
 
   rotate(deg) {
@@ -34,7 +56,7 @@ export default class Camera {
       (this.bounds.bottom - this.bounds.top)
     );
     // prettier-ignore
-    return new Matrix2d([
+    return new Matrix3d([
       a, 0, 0,
       0, b, 0,
       c, d, 1,
@@ -50,7 +72,7 @@ export default class Camera {
     let d = (this.bounds.bottom + this.bounds.top) / 2;
 
     // prettier-ignore
-    return new Matrix2d([
+    return new Matrix3d([
       a, 0, 0,
       0, b, 0,
       c, d, 1,
@@ -59,14 +81,11 @@ export default class Camera {
 
   createViewProjection() {
     const projectionMatrix = this.createUnprojectionMatrix();
-    const t = Matrix2d.rotation(this.rotation).mul_vec(this.translation);
 
-    return Matrix2d.IDENTITY.clone()
-      .mul(Matrix2d.translation(-this.translation[0], -this.translation[1]))
-      // .mul(Matrix2d.translation(-t[0], -t[1]))
-      .mul(Matrix2d.scaling(this.zoom))
-      .mul(Matrix2d.rotation(this.rotation))
-      .mul(projectionMatrix)
-      
+    return Matrix3d.IDENTITY.clone()
+      .mul(Matrix3d.translation(-this.translation[0], -this.translation[1]))
+      .mul(Matrix3d.scaling(this.zoom))
+      .mul(Matrix3d.rotation(this.rotation))
+      .mul(projectionMatrix)      
   }
 }

@@ -1,4 +1,4 @@
-import Matrix2d from "./Matrix2d";
+import Matrix3d from "./Matrix3d";
 
 export default class Triangle {
   constructor(x, y, scale, color) {
@@ -28,9 +28,9 @@ export default class Triangle {
   }
 
   draw(context, viewProjection) {
-    const modelMatrix = Matrix2d.IDENTITY.mul(Matrix2d.scaling(this.scale))
-      .mul(Matrix2d.rotation(this.rotation))
-      .mul(Matrix2d.translation(this.x, this.y));
+    const modelMatrix = Matrix3d.IDENTITY.mul(Matrix3d.scaling(this.scale))
+      .mul(Matrix3d.rotation(this.rotation))
+      .mul(Matrix3d.translation(this.x, this.y));
     const modelViewMatrix = modelMatrix.mul(viewProjection);
 
     context.beginPath();
@@ -38,7 +38,6 @@ export default class Triangle {
     context.moveTo(start[0], start[1]);
     for (let vertice of this.vertices) {
       let v = modelViewMatrix.mul_vec(vertice);
-      // console.log(`${vertice} => ${v}`);
       context.lineTo(v[0], v[1]);
     }
     context.closePath();
