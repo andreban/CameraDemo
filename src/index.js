@@ -2,9 +2,16 @@ import Camera from "./Camera.js";
 import Input from "./Input.js";
 import Triangle from "./triangle.js";
 
-const CAMERA_TRANSLATION_SPEED = 0.01;
-const CAMERA_ROTATION_SPEED = 1;
+const CAMERA_TRANSLATION_SPEED = 5.0;
+const CAMERA_ROTATION_SPEED = 120;
 const CAMERA_ZOOM_SPEED = 1.01;
+
+let clock = {
+  previousFrame: 0,
+  currentFrame: 0,
+  elapsed: 0,
+  elapsedSeconds: 0,
+};
 
 class App {
   constructor(canvas) {
@@ -16,32 +23,32 @@ class App {
     this.redTriangle = new Triangle(-1.5, 0, 0.5, "#FF0000");
   }
 
-  update() {
-    this.redTriangle.rotate(1);
-    this.blackTriangle.rotate(-0.5);
+  update(clock) {
+    this.redTriangle.rotate(30 * clock.elapsedSeconds);
+    this.blackTriangle.rotate(-60 * clock.elapsedSeconds);
 
     if (this.input.inputState.left) {
-      this.camera.translate(-CAMERA_TRANSLATION_SPEED, 0);
+      this.camera.translate(-CAMERA_TRANSLATION_SPEED * clock.elapsedSeconds, 0);
     }
 
     if (this.input.inputState.right) {
-      this.camera.translate(CAMERA_TRANSLATION_SPEED, 0);
+      this.camera.translate(CAMERA_TRANSLATION_SPEED * clock.elapsedSeconds, 0);
     }
 
     if (this.input.inputState.up) {
-      this.camera.translate(0, -CAMERA_TRANSLATION_SPEED);
+      this.camera.translate(0, -CAMERA_TRANSLATION_SPEED * clock.elapsedSeconds);
     }
 
     if (this.input.inputState.down) {
-      this.camera.translate(0, CAMERA_TRANSLATION_SPEED);
+      this.camera.translate(0, CAMERA_TRANSLATION_SPEED * clock.elapsedSeconds);
     }
 
     if (this.input.inputState.rotateCw) {
-      this.camera.rotate(CAMERA_ROTATION_SPEED);
+      this.camera.rotate(CAMERA_ROTATION_SPEED * clock.elapsedSeconds);
     }
 
     if (this.input.inputState.rotateCcw) {
-      this.camera.rotate(-CAMERA_ROTATION_SPEED);
+      this.camera.rotate(-CAMERA_ROTATION_SPEED * clock.elapsedSeconds);
     }
 
     if (this.input.inputState.zoomIn) {
@@ -67,9 +74,16 @@ class App {
 const canvas = document.querySelector("#canvas");
 const app = new App(canvas);
 
-const updateApp = () => {
-  app.update();
+
+const updateApp = (time) => {
+  // Calculate frame timing.
+  clock.previousFrame = clock.currentFrame;
+  clock.currentFrame = time;
+  clock.elapsed = clock.currentFrame - clock.previousFrame;
+  clock.elapsedSeconds = clock.elapsed / 1000.0;
+
+  app.update(clock);
   app.draw();
   requestAnimationFrame(updateApp);
 };
-updateApp();
+updateApp(0);
