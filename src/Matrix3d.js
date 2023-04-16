@@ -19,6 +19,15 @@ export default class Matrix3d {
     ]);
   }
 
+  static scaling2(xScale, yScale) {
+    // prettier-ignore
+    return new Matrix3d([
+      xScale, 0, 0,
+      0, yScale, 0,
+      0, 0, 1, 
+    ]);
+  }
+
   static scaling(scale) {
     // prettier-ignore
     return new Matrix3d([

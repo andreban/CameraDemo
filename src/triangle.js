@@ -1,5 +1,7 @@
 import Matrix3d from "./Matrix3d";
 
+const SIN_60 = Math.sqrt(3) / 2;
+
 export default class Triangle {
   constructor(x, y, scale, color) {
     this.x = x;
@@ -8,9 +10,9 @@ export default class Triangle {
     this.rotation = 0;
     this.color = color;
     this.vertices = [
-      [-0.5, -0.5],
-      [0, 0.5],
-      [0.5, -0.5]
+      [-1.0, -SIN_60],
+      [0, SIN_60],
+      [1.0, -SIN_60]
     ];
   }
 

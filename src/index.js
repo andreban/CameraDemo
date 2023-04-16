@@ -2,7 +2,7 @@ import Camera from "./Camera.js";
 import Input from "./Input.js";
 import Triangle from "./triangle.js";
 
-const CAMERA_TRANSLATION_SPEED = 5.0;
+const CAMERA_TRANSLATION_SPEED = 1.0;
 const CAMERA_ROTATION_SPEED = 120;
 const CAMERA_ZOOM_SPEED = 1.01;
 
@@ -19,8 +19,8 @@ class App {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
     this.camera = new Camera(800, 600);
-    this.blackTriangle = new Triangle(0, 0, 1, "#000000");
-    this.redTriangle = new Triangle(-1.5, 0, 0.5, "#FF0000");
+    this.blackTriangle = new Triangle(0, 0, 0.5, "#000000");
+    this.redTriangle = new Triangle(-1.5, 0, 0.25, "#FF0000");
   }
 
   update(clock) {
@@ -68,6 +68,14 @@ class App {
     const viewProjection = this.camera.createViewProjection();
     this.blackTriangle.draw(this.context, viewProjection);
     this.redTriangle.draw(this.context, viewProjection);
+
+    // Draws a dot at the centre of screen.
+    this.context.fillStyle = "#FFFFFF";
+    this.context.globalCompositeOperation="difference"; // Use the reverse colour.
+    this.context.beginPath();
+    this.context.arc(400, 300, 2, 0, 2 * Math.PI);
+    this.context.fill();
+    this.context.globalCompositeOperation="source-over"; // Reset composite to default.
   }
 }
 

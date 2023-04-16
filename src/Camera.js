@@ -3,6 +3,7 @@ import Matrix3d from "./Matrix3d";
 export default class Camera {
   constructor(screenWidth, screenHeight) {
     this.bounds = { left: 0, top: 0, right: screenWidth, bottom: screenHeight };
+    this.aspectRatio = (this.bounds.right - this.bounds.left) / (this.bounds.bottom - this.bounds.top);
     this.translation = [0, 0];
     this.rotation = 0;
     this.zoom = 1;
@@ -81,11 +82,11 @@ export default class Camera {
 
   createViewProjection() {
     const projectionMatrix = this.createUnprojectionMatrix();
-
     return Matrix3d.IDENTITY.clone()
       .mul(Matrix3d.translation(-this.translation[0], -this.translation[1]))
       .mul(Matrix3d.scaling(this.zoom))
-      .mul(Matrix3d.rotation(this.rotation))
-      .mul(projectionMatrix)      
+      .mul(Matrix3d.rotation(this.rotation))  
+      .mul(Matrix3d.scaling2(1.0 / this.aspectRatio, 1.0))
+      .mul(projectionMatrix)
   }
 }
